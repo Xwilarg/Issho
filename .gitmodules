@@ -1,0 +1,3 @@
+[submodule "Issho/Discord-Utils"]
+	path = Issho/Discord-Utils
+	url = https://github.com/Xwilarg/Discord-Utils
