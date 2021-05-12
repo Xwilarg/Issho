@@ -90,7 +90,7 @@ namespace Issho.Modules
             }
             else
             {
-                await ReplyAsync("https://discord.gg/" + code);
+                await ReplyAsync("<https://discord.gg/" + code + ">");
             }
             if (Program.WaitTimes.ContainsKey(Context.Guild.Id))
             {
