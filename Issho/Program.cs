@@ -4,6 +4,7 @@ using Discord.WebSocket;
 using DiscordUtils;
 using Issho.Modules;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -20,6 +21,8 @@ namespace Issho
         public static DateTime StartTime { private set; get; }
         public static HttpClient Http { get; } = new();
         public static string Token { private set; get; }
+
+        public static Dictionary<ulong, DateTime> WaitTimes { private set; get; } = new();
 
         private Program()
         {

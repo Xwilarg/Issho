@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -49,6 +50,15 @@ namespace Issho.Modules
         [Command("Play")]
         public async Task Info(params string[] gameName)
         {
+            if (Program.WaitTimes.ContainsKey(Context.Guild.Id))
+            {
+                var time = DateTime.Now - Program.WaitTimes[Context.Guild.Id];
+                if (time.TotalSeconds < 10)
+                {
+                    await ReplyAsync("You must wait " + (10 - time.TotalSeconds).ToString("0.00") + " more seconds to do the command again in this guild");
+                    return;
+                }
+            }
             string name = gameName == null ? null : string.Join(" ", gameName).ToUpperInvariant().Trim();
             if (string.IsNullOrWhiteSpace(name) || !games.Keys.Any(x => x.ToUpperInvariant() == name))
             {
@@ -73,8 +83,23 @@ namespace Issho.Modules
 
                 var answer = await Program.Http.SendAsync(request);
                 var json = await answer.Content.ReadAsStringAsync();
-                System.Console.WriteLine(JsonConvert.DeserializeObject<JObject>(json));
-                await ReplyAsync("https://discord.gg/" + JsonConvert.DeserializeObject<JObject>(json)["code"]);
+                var code = JsonConvert.DeserializeObject<JObject>(json)["code"].Value<string>();
+                if (code == "50013")
+                {
+                    await ReplyAsync("I wasn't able to create an invite link, please make sure I have the permission for that");
+                }
+                else
+                {
+                    await ReplyAsync("https://discord.gg/" + code);
+                }
+                if (Program.WaitTimes.ContainsKey(Context.Guild.Id))
+                {
+                    Program.WaitTimes[Context.Guild.Id] = DateTime.Now;
+                }
+                else
+                {
+                    Program.WaitTimes.Add(Context.Guild.Id, DateTime.Now);
+                }
             }
         }
     }
