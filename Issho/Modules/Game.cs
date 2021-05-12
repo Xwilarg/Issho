@@ -50,15 +50,7 @@ namespace Issho.Modules
         [Command("Play")]
         public async Task Info(params string[] gameName)
         {
-            if (Program.WaitTimes.ContainsKey(Context.Guild.Id))
-            {
-                var time = DateTime.Now - Program.WaitTimes[Context.Guild.Id];
-                if (time.TotalSeconds < 10)
-                {
-                    await ReplyAsync("You must wait " + (10 - time.TotalSeconds).ToString("0.00") + " more seconds to do the command again in this guild");
-                    return;
-                }
-            }
+
             string name = gameName == null ? null : string.Join(" ", gameName).ToUpperInvariant().Trim();
             if (string.IsNullOrWhiteSpace(name) || !games.Keys.Any(x => x.ToUpperInvariant() == name))
             {
@@ -69,37 +61,44 @@ namespace Issho.Modules
                     Description = "Available games:\n" + string.Join(", ", games.Keys),
                     Color = Color.Purple
                 }.Build());
+                return;
+            }
+            if (Program.WaitTimes.ContainsKey(Context.Guild.Id))
+            {
+                var time = DateTime.Now - Program.WaitTimes[Context.Guild.Id];
+                if (time.TotalSeconds < 10)
+                {
+                    await ReplyAsync("You must wait " + (10 - time.TotalSeconds).ToString("0.00") + " more seconds to do the command again in this guild");
+                    return;
+                }
+            }
+            if (Context.User is not IGuildUser user || user.VoiceChannel == null)
+            {
+                await ReplyAsync("You must be in a voice channel to use this command.");
+                return;
+            }
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://discord.com/api/v9/channels/" + user.VoiceChannel.Id + "/invites");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bot", Program.Token);
+            request.Content = new StringContent("{\"target_type\":2,\"target_application_id\":\"" + games[games.Keys.First(x => x.ToUpperInvariant() == name)] + "\"}", Encoding.UTF8, "application/json");
+
+            var answer = await Program.Http.SendAsync(request);
+            var json = await answer.Content.ReadAsStringAsync();
+            var code = JsonConvert.DeserializeObject<JObject>(json)["code"].Value<string>();
+            if (code == "50013")
+            {
+                await ReplyAsync("I wasn't able to create an invite link, please make sure I have the permission for that");
             }
             else
             {
-                if (Context.User is not IGuildUser user || user.VoiceChannel == null)
-                {
-                    await ReplyAsync("You must be in a voice channel to use this command.");
-                    return;
-                }
-                var request = new HttpRequestMessage(HttpMethod.Post, "https://discord.com/api/v9/channels/" + user.VoiceChannel.Id + "/invites");
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bot", Program.Token);
-                request.Content = new StringContent("{\"target_type\":2,\"target_application_id\":\"" + games[games.Keys.First(x => x.ToUpperInvariant() == name)] + "\"}", Encoding.UTF8, "application/json");
-
-                var answer = await Program.Http.SendAsync(request);
-                var json = await answer.Content.ReadAsStringAsync();
-                var code = JsonConvert.DeserializeObject<JObject>(json)["code"].Value<string>();
-                if (code == "50013")
-                {
-                    await ReplyAsync("I wasn't able to create an invite link, please make sure I have the permission for that");
-                }
-                else
-                {
-                    await ReplyAsync("https://discord.gg/" + code);
-                }
-                if (Program.WaitTimes.ContainsKey(Context.Guild.Id))
-                {
-                    Program.WaitTimes[Context.Guild.Id] = DateTime.Now;
-                }
-                else
-                {
-                    Program.WaitTimes.Add(Context.Guild.Id, DateTime.Now);
-                }
+                await ReplyAsync("https://discord.gg/" + code);
+            }
+            if (Program.WaitTimes.ContainsKey(Context.Guild.Id))
+            {
+                Program.WaitTimes[Context.Guild.Id] = DateTime.Now;
+            }
+            else
+            {
+                Program.WaitTimes.Add(Context.Guild.Id, DateTime.Now);
             }
         }
     }
