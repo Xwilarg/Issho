@@ -16,11 +16,11 @@ namespace Issho.Modules
         private Dictionary<string, string> games = new Dictionary<string, string>
         {
             { "Poker Night", "755827207812677713" },
-            { "Betrayal", "773336526917861400" },
-            { "Youtube Together", "755600276941176913" },
-            { "Fishington", "814288819477020702" },
+            { "Betrayal.io", "773336526917861400" },
+            { "YouTube Together", "755600276941176913" },
+            { "Fishington.io", "814288819477020702" },
             { "Chess", "832012586023256104" },
-            { "Game 2", "832012682520428625" },
+            { "CG 3 Dev", "832012682520428625" },
             { "Game 3", "832012730599735326" },
             { "Game 4", "832012774040141894" },
             { "Game 5", "832012815819604009" },
