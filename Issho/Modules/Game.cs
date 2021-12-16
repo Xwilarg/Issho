@@ -18,7 +18,7 @@ namespace Issho.Modules
         {
             { "Poker Night", "755827207812677713" },
             { "Betrayal.io", "773336526917861400" },
-            { "YouTube Together", "755600276941176913" },
+            { "YouTube Together", "880218394199220334" },
             { "Fishington.io", "814288819477020702" },
             { "Chess", "832012586023256104" },
             { "CG 3 Dev", "832012682520428625" },
