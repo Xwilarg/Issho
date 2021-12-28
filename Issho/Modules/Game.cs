@@ -14,37 +14,19 @@ namespace Issho.Modules
 {
     public class Game : ModuleBase
     {
-        private Dictionary<string, string> games = new Dictionary<string, string>
+        private Dictionary<string, string> games = new()
         {
             { "Poker Night", "755827207812677713" },
             { "Betrayal.io", "773336526917861400" },
-            { "YouTube Together", "880218394199220334" },
             { "Fishington.io", "814288819477020702" },
-            { "Chess", "832012586023256104" },
-            { "CG 3 Dev", "832012682520428625" },
-            { "Game 3", "832012730599735326" },
-            { "Game 4", "832012774040141894" },
-            { "Game 5", "832012815819604009" },
-            { "Game 6", "832012854282158180" },
-            { "Game 7", "832012894068801636" },
-            { "Game 8", "832012938398400562" },
-            { "Game 9", "832013003968348200" },
-            { "Game 10", "832013108234289153" },
-            { "Game 11", "832025061657280566" },
-            { "Game 12", "832025114077298718" },
-            { "Game 13", "832025144389533716" },
-            { "Game 14", "832025179659960360" },
-            { "Game 15", "832025219526033439" },
-            { "Game 16", "832025249335738428" },
-            { "Game 17", "832025333930524692" },
-            { "Game 18", "832025385159622656" },
-            { "Game 19", "832025431280320532" },
-            { "Game 20", "832025470685937707" },
-            { "Game 21", "832025799590281238" },
-            { "Game 22", "832025857525678142" },
-            { "Game 23", "832025886030168105" },
-            { "Game 24", "832025928938946590" },
-            { "Game 25", "832025993019260929" },
+            { "Chess In The Park", "832012774040141894" },
+            { "Checkers In The Park", "832013003968348200" },
+            { "Watch Together", "880218394199220334" },
+            { "Letter Tile", "879863686565621790" },
+            { "Word Snacks", "879863976006127627" },
+            { "Doodle Crew", "878067389634314250" },
+            { "SpellCast", "852509694341283871" },
+            { "SpellCast Staging", "893449443918086174" }
         };
 
         [Command("Play")]
@@ -58,7 +40,7 @@ namespace Issho.Modules
                 await ReplyAsync(embed: new EmbedBuilder
                 {
                     Title = "Usage: Play [Game Name]",
-                    Description = "Available games:\n" + string.Join(", ", games.Keys),
+                    Description = "**Available games:**\n" + string.Join(", ", games.Keys),
                     Color = Color.Purple
                 }.Build());
                 return;
